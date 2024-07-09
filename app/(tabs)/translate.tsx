@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { View, StyleSheet, Button, TouchableOpacity, Text } from 'react-native';
-import { CameraView, useCameraPermissions, Camera } from 'expo-camera';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { ThemedText } from '@/components/ThemedText';
 import * as FileSystem from 'expo-file-system';
 
@@ -37,7 +37,7 @@ export default function CameraScreen() {
       let photo = await cameraRef.current.takePictureAsync();
 
       console.log(photo);
-      sendToOpenAI(photo.uri);
+      await sendToOpenAI(photo.uri);
     }
   }
 
@@ -106,19 +106,14 @@ export default function CameraScreen() {
   };
 
   function resetToastMessage(){
-    setShowToast(false);
     setToastMessage('');
+    setShowToast(false);
   }
 
   return (
     <View style={styles.container}>
       <CameraView style={styles.camera} ref={cameraRef}>
         <View style={styles.overlay}>
-          {showToast &&
-            <View style={styles.messageContainer}>
-              <ThemedText style={styles.textResponse}>{toastMessage}</ThemedText>
-            </View>
-          }
           <View style={styles.buttonContainer} >
           <TouchableOpacity style={styles.button} onPress={translate}>
             <Text style={styles.text}>Traducir Orden</Text>
@@ -127,10 +122,13 @@ export default function CameraScreen() {
             <Text style={styles.text}>Limpiar</Text>
           </TouchableOpacity>
           </View>
-         
         </View>
       </CameraView>
-
+      {showToast &&
+            <View style={styles.messageContainer}>
+              <ThemedText style={styles.textResponse}>{toastMessage}</ThemedText>
+            </View>
+          }
     </View>
   );
 }
@@ -147,7 +145,6 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'flex-end', // Alinea los elementos en la parte inferior
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semi-transparente para superposiciones
     padding: 10,
   },
   button: {
