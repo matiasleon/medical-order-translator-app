@@ -64,6 +64,8 @@ export default function CameraScreen() {
           Solo describi sobre medicina.
           Responde de forma de listado como:
           - Nombre de Medicacion: cantidad.
+          - Nombre de tratamiento: tiempo 
+          - Nombre de estudio: 
           No podes dar un diagnostico al paciente. Recomendar que hable con el médico.
           Si noa hay una receta medica en la imagen describi 'No hay una imagen medica en la foto'.
           Aclarar el % de precision de la traducción.
