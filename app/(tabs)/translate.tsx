@@ -10,7 +10,7 @@ export default function CameraScreen() {
 
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef(null);
-  const [showResponse, setShowResponde] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
 
@@ -29,11 +29,13 @@ export default function CameraScreen() {
     );
   }
 
+  // TODO: Unify toast logic
   async function translate() {
     setToastMessage("Traduciendo");
+    setShowToast(true);
     if (cameraRef.current) {
       let photo = await cameraRef.current.takePictureAsync();
-      // do api call to openai
+
       console.log(photo);
       sendToOpenAI(photo.uri);
     }
@@ -93,26 +95,43 @@ export default function CameraScreen() {
       const responseMsg = response.data.choices[0].message.content;
       console.log('Respuesta de OpenAI:', responseMsg);
       setToastMessage(responseMsg);
-      
+      setShowToast(true);
+
     } catch (error) {
       console.log(error);
       console.error('Error al enviar la imagen a OpenAI:', error);
+      setToastMessage("Error al traducir foto");
+      setShowToast(true);
     }
   };
 
+  function resetToastMessage(){
+    setShowToast(false);
+    setToastMessage('');
+  }
+
   return (
     <View style={styles.container}>
-    <CameraView style={styles.camera}  ref={cameraRef}>
-      <View style={styles.overlay}>
-        <TouchableOpacity style={styles.button} onPress={translate}>
-          <Text style={styles.text}>Traducir Orden</Text>
-        </TouchableOpacity>
-        <View style={styles.messageContainer}>
-          <ThemedText style={styles.textResponse}>{toastMessage}</ThemedText>
+      <CameraView style={styles.camera} ref={cameraRef}>
+        <View style={styles.overlay}>
+          {showToast &&
+            <View style={styles.messageContainer}>
+              <ThemedText style={styles.textResponse}>{toastMessage}</ThemedText>
+            </View>
+          }
+          <View style={styles.buttonContainer} >
+          <TouchableOpacity style={styles.button} onPress={translate}>
+            <Text style={styles.text}>Traducir Orden</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={resetToastMessage}>
+            <Text style={styles.text}>Limpiar</Text>
+          </TouchableOpacity>
+          </View>
+         
         </View>
-      </View>
-    </CameraView>
-  </View>
+      </CameraView>
+
+    </View>
   );
 }
 
@@ -123,20 +142,19 @@ const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
-    aspectRatio: 1, // Proporción de aspecto cuadrada para la cámara
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'flex-end', // Alinea los elementos en la parte inferior
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semi-transparente para superposiciones
-    paddingRight:200,
+    padding: 10,
   },
   button: {
     backgroundColor: '#007AFF', // Color de fondo del botón
-    padding: 12,
-    borderRadius: 5,
-    marginBottom: 16,
+    padding: 10,
+    borderRadius: 45,
+    margin: 16,
   },
   text: {
     fontSize: 20,
@@ -147,13 +165,16 @@ const styles = StyleSheet.create({
   messageContainer: {
     backgroundColor: 'white', // Fondo del contenedor de mensaje
     padding: 8,
-    paddingRight:250,
-    borderRadius: 5,
-    marginBottom: 32, // Espacio adicional después del mensaje
+    borderRadius: 10,
+    marginBottom: 10, // Espacio adicional después del mensaje
   },
   textResponse: {
     fontSize: 16,
     color: 'black',
     textAlign: 'center',
   },
+  buttonContainer:{
+    flexDirection:'row',
+    padding:5,
+  }
 });

@@ -15,18 +15,18 @@ export default function TabLayout() {
         headerShown: false,
       }}>
       <Tabs.Screen
-        name="camera" // must be same name of file for page
+        name="index" // must be same name of file for page
         options={{
-          title: 'Camera',
+          title: 'Home',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'}color={color} />
+            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="index"
+        name="translate" // must be same name of file for page
         options={{
-          title: 'Home',
+          title: 'Traducir',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
           ),
