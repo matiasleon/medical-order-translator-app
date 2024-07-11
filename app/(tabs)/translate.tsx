@@ -49,7 +49,7 @@ export default function CameraScreen() {
   };
 
   async function sendToOpenAI(imageUri: string) {
-    const apiKey = process.env.EXPO_PUBLIC_API_KEY_OPEN_AI;
+    const apiKey = process.env.EXPO_PUBLIC_API_KEY_OPEN_AI || process.env.API_KEY_OPEN_AI_SECRET
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
 
     const imageBase64 = await convertImageToBase64(imageUri);
