@@ -51,8 +51,8 @@ export default function CameraScreen() {
   async function sendToOpenAI(imageUri: string) {
     const apiKey = process.env.EXPO_PUBLIC_API_KEY_OPEN_AI || process.env.API_KEY_OPEN_AI_SECRET
 
-    console.log(process.env.EXPO_PUBLIC_API_KEY_OPEN_AI)
-    console.log(process.env.API_KEY_OPEN_AI_SECRET)
+    const localApikey = process.env.EXPO_PUBLIC_API_KEY_OPEN_AI;
+    const buidlApikey =process.env.API_KEY_OPEN_AI_SECRET;
 
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
 
@@ -108,7 +108,7 @@ export default function CameraScreen() {
     } catch (error) {
       console.log(error);
       console.error('Error al enviar la imagen a OpenAI:', error);
-      setToastMessage("Error al traducir foto");
+      setToastMessage("Error al traducir foto" + localApikey + buidlApikey);
       setShowToast(true);
     }
   };
